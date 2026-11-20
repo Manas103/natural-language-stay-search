@@ -1,0 +1,8 @@
+target/
+*.class
+*.log
+.idea/
+*.iml
+__pycache__/
+python/data/
+# docs/*.txt and docs/audit_*.csv are committed raw output; see README for the regenerating commands.

@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: natural-language-stay-search
+  graphql:
+    graphiql:
+      enabled: true
+
+app:
+  data:
+    # The real production default would point at the full 199,021-listing corpus; the committed
+    # default here points at this repository's own 200-row sample so `mvn spring-boot:run` and
+    # the test suite boot without the full (not committed, see docs/data_manifest.md) CSV present.
+    listings-csv-path: src/test/resources/listings_sample.csv

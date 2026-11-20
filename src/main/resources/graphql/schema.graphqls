@@ -1,0 +1,17 @@
+type Query {
+    "Natural-language stay search over the ingested Inside Airbnb corpus."
+    searchStays(query: String!, limit: Int): [StayResult!]!
+}
+
+type StayResult {
+    id: ID!
+    name: String
+    city: String
+    neighbourhood: String
+    propertyType: String
+    priceCents: Int!
+    bedrooms: Int!
+    reviewScoreRating: Float!
+    bm25Score: Float!
+    rerankScore: Float!
+}

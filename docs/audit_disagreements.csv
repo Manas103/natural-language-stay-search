@@ -1,0 +1,49 @@
+query_id,listing_id,query_text,generator_grade,audit_grade,generator_relevant,audit_relevant
+492,1508178841742625852,"Lambeth entire rental unit, spacious, with a washer, max $418 per night",1,2,False,True
+5684,786685,"luxury entire condo near Kensington and Chelsea, with air conditioning, under $614",0,2,False,True
+775,897366772582089952,"family-friendly entire rental unit near Upper East Side, with a full kitchen, under $291",0,2,False,True
+1623,52788498,bright private room in home in Hackney with wifi under $148 a night,0,2,False,True
+7642,1723398752663998908,"need a family-friendly stay in Entrepôt for under $320, with a full kitchen",1,2,False,True
+1746,649314401060114870,"entire rental unit in Bensonhurst with wifi, budget $219",1,3,False,True
+7344,848416944928326419,"need a peaceful stay in Fort Hamilton for under $246, with a gym",1,2,False,True
+2463,1141462901516233311,"Batignolles-Monceau entire rental unit, budget, with wifi, max $271 per night",1,2,False,True
+8114,707822189375660286,"need a cozy stay in Hounslow for under $156, with a pool",1,2,False,True
+5481,1556468116605655240,"somewhere pet-friendly in Southwark with 2 bedrooms, under $216",1,2,False,True
+7791,702120460407430320,family-friendly entire rental unit in Southwark with a full kitchen under $205 a night,1,2,False,True
+296,34256727,"entire rental unit with wifi in Batignolles-Monceau, budget and under $195",0,2,False,True
+6052,771130570873963824,"family-friendly entire rental unit near Bourse, with a full kitchen, under $752",1,2,False,True
+8008,23254766,central entire rental unit in Hammersmith and Fulham with free parking under $265 a night,1,2,False,True
+5125,808630794075602246,"somewhere pet-friendly in Midtown with 2 bedrooms, under $397",2,1,True,False
+5888,38134421,"somewhere peaceful in Flushing with 1 bedrooms, under $249",1,2,False,True
+5265,788259,"somewhere budget in Entrepôt with 1 bedrooms, under $217",1,2,False,True
+1795,881384171635357208,"Observatoire entire rental unit, spacious, with a washer, max $175 per night",0,2,False,True
+5643,48590840,luxury entire rental unit in Popincourt with air conditioning under $155 a night,0,2,False,True
+4987,52018774,"Westminster entire condo, spacious, with a washer, max $240 per night",1,2,False,True
+3025,638748787843083680,spacious entire rental unit in Ménilmontant with a washer under $144 a night,1,2,False,True
+9051,1722576058239756584,"Bourse entire rental unit, sunny, with a workspace, max $766 per night",1,2,False,True
+8921,1226822606875887766,"room in hotel with a gym in Midtown, peaceful and under $698",1,2,False,True
+7331,1455040066960947559,"entire rental unit in Palais-Bourbon with a full kitchen, budget $222",1,2,False,True
+5218,780330742819725859,"private room in townhouse with free parking in Bedford-Stuyvesant, central and under $285",1,2,False,True
+5166,734088502582394286,"Lambeth private room in rental unit, luxury, with air conditioning, max $170 per night",0,2,False,True
+7034,1756439873544870641,"need a bright stay in Bourse for under $577, with wifi",1,2,False,True
+9071,1189834831860624793,"need a family-friendly stay in Southwark for under $416, with a full kitchen",0,2,False,True
+4742,891611429515445198,modern entire home in Luxembourg with free parking under $671 a night,1,2,False,True
+355,1736884964820700401,"entire rental unit in Camden dog friendly, budget $279",1,2,False,True
+8427,1345304875035113821,a budget 1-bedroom private room in home with wifi in East Elmhurst,0,2,False,True
+2190,589138930814145890,"need a central stay in Croydon for under $92, with free parking",1,2,False,True
+7099,1753052354631903556,"need a budget stay in Popincourt for under $151, with wifi",1,2,False,True
+4661,1735660427829458424,"entire loft in Hôtel-de-Ville with a gym, budget $1145",1,2,False,True
+380,28181575,"Popincourt entire rental unit, luxury, with air conditioning, max $291 per night",0,2,False,True
+6285,1127240717553508124,"somewhere quiet in Palais-Bourbon with 1 bedrooms, under $480",1,2,False,True
+8559,816783428767938211,bright entire rental unit in Batignolles-Monceau with wifi under $350 a night,0,2,False,True
+2613,843421506658841795,"room in boutique hotel with a gym in Midtown, peaceful and under $1414",1,2,False,True
+1916,1193615199080005457,"entire rental unit with air conditioning in Buttes-Montmartre, luxury and under $250",0,2,False,True
+7187,1600118294845239867,"entire condo with free parking in Lambeth, central and under $190",1,2,False,True
+281,631736560411380264,"room in hotel in Bedford-Stuyvesant with a gym, budget $339",1,2,False,True
+187,897861455839507683,"Kensington and Chelsea entire rental unit, luxury, with air conditioning, max $140 per night",0,2,False,True
+8516,2574386,"Chelsea entire rental unit, central, with free parking, max $393 per night",1,2,False,True
+6903,1619585601329817249,"somewhere family-friendly in Hackney with 1 bedrooms, under $106",3,1,True,False
+799,1498485809507610990,"somewhere quiet in Hackney with 1 bedrooms, under $198",2,1,True,False
+52,51608497,"somewhere central in Mariners Harbor with 1 bedrooms, under $137",1,2,False,True
+6325,1008591019876434867,"somewhere secluded in Kensington and Chelsea with 1 bedrooms, under $227",3,1,True,False
+2508,715501176123029895,"private room in rental unit in Concourse with an elevator, budget $170",1,2,False,True

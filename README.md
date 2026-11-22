@@ -1,13 +1,14 @@
-# Natural-Language Stay Search with a Seed-Guided Evaluation Set
+# Natural-Language Stay Search with a Query-Understanding Benchmark
 
 Free-text stay queries ("quiet cabin near a lake, dog friendly, under $150") turned into
 structured filters (price, bedrooms, amenity, neighbourhood) plus a semantic leg over a real,
 public 199,021-listing Inside Airbnb export, served as a GraphQL field, reranked by a learned
 logistic model trained on no traffic of its own: 40,500+ synthetic queries and labels grown from
-150 hand-written seed templates, audited at 88.0% agreement against 400 sampled pairs. Java 21,
-Spring Boot 3.3.4 GraphQL, Apache Commons CSV, H2; Python 3.12 (stdlib only) for the synthetic
-data pipeline. Every number below was measured on this machine, not targeted in advance; one of
-the seven claims was not met after three genuine attempts, and that is disclosed plainly.
+150 hand-written seed templates, audited at 88.0% agreement against 400 sampled pairs, with
+per-slot extraction separately scored on 300 hand-labeled queries. Java 21, Spring Boot 3.3.4
+GraphQL, Apache Commons CSV, H2; Python 3.12 (stdlib only) for the synthetic data pipeline. Every
+number below was measured on this machine, not targeted in advance; one of the seven original
+claims was not met after three genuine attempts, and that is disclosed plainly.
 
 ## Why this exists
 
@@ -28,6 +29,13 @@ over data that is actually public rather than synthetic from the start.
 - **The one place this project claims human-style judgment (the 400-pair audit) is a second,
   independently written heuristic grader**, not a real human rater (`python/audit_sample.py`);
   disclosed here rather than implied.
+- **The 300-query slot-extraction set is hand-labeled by template, not by row.** 30 sentence
+  shapes were each hand-assigned the single correct price/bedroom/amenity/neighbourhood extraction
+  a human reading the sentence would give, independent of what `QueryParser`'s own rules happen to
+  do; 10 real listings then fill in the real numbers and place names (`python/slot_eval_templates.py`,
+  `python/generate_slot_eval_queries.py`). Several shapes deliberately use a phrasing (a word-form
+  number, an abbreviation, a synonym, a shortened real place name) the parser is known not to
+  catch, so the measured recall below 100% is the real result, not an oversight.
 - **Machine and toolchain.** AMD Ryzen 7 7800X3D, 8 physical / 16 logical cores, Windows 11 Home,
   JDK 21 Temurin, Spring Boot 3.3.4 (Spring GraphQL 1.3.2), Maven 3.9.9, Python 3.12 (no third-party
   packages).
@@ -53,7 +61,16 @@ python/
   seed_queries.py                        150 hand-written template strings
   generate_synthetic_queries.py          expands seeds into the labeled train/eval sets
   audit_sample.py                        the independent 400-pair audit and its regression suite
+  slot_eval_templates.py                 30 hand-labeled query-understanding templates
+  generate_slot_eval_queries.py          expands the 30 templates x 10 real listings into 300 rows
 ```
+
+**Why a separate 300-query set instead of reusing the 40,500 relevance labels for slot scoring.**
+The relevance set's labels are about which *listing* a query should rank highly, not about what
+`QueryParser` should extract from the text; grading extraction against it would conflate two
+different correctness notions. The 300-query set exists only to answer "did the parser get the
+right structured filter", one slot at a time, which is why it is scored with a plain
+precision/recall confusion matrix (`SlotExtractionEvaluationTest`) rather than NDCG.
 
 **Why a day-by-day candidate filter instead of a vector index.** This project's own structured
 filters (price, bedrooms, amenity, neighbourhood) are exact, verifiable facts about a listing;
@@ -65,9 +82,13 @@ hidden.** See Findings.
 
 ## Validation
 
-Default test run, 20 tests, all passing (`docs/test_output.txt`). `Bm25IndexTest` and
+Default test run, 21 tests, all passing (`docs/test_output.txt`). `Bm25IndexTest` and
 `ReferenceOracleDiffTest`-style coverage lives in `SearchServiceTest`/`QueryParserTest`/`NdcgCalculatorTest`;
 `StaySearchGraphQlIntegrationTest` exercises the real GraphQL field end to end via `spring-graphql-test`.
+`SlotExtractionEvaluationTest` is the per-slot query-understanding benchmark: it runs in the
+default suite (no system properties, no full corpus needed) because it scores text-parsing
+behavior against the committed 300-row hand-labeled set, not against the full 199,021-listing
+corpus.
 
 ## Findings
 
@@ -96,6 +117,18 @@ identically once filtered, so no reranker built on structured features can impro
 is a property of the label design, not a bug in the reranker, and is reported as the root cause of
 the one unmet claim below rather than patched by weakening the generator's own grading.
 
+**What the per-slot benchmark found.** Precision is 1.0 on every slot: whenever `QueryParser`
+extracts a value, it is always the value the hand-labeled template says is correct; zero false
+positives across 300 rows. Recall is where the dictionary-and-regex design shows its edges:
+neighbourhood recall is 0.80 (the one miss is an invented place name no corpus-grounded matcher
+could ever know, by construction); price recall is 0.625 (misses are phrasings without a literal
+`$`, such as "around 117 dollars a night" or "117 dollars max"); amenity recall is 0.50 (misses are
+real synonyms outside the 12-phrase dictionary, such as "a swimming pool" for "with a pool" or
+"fast internet" for "with wifi"); bedroom recall is 0.50 (misses are word-form numbers, "BR"
+abbreviations, and "bed" without "room"). All of this matches `QueryParser`'s own javadoc, which
+already says it is rule-based and not a general-purpose intent parser; the benchmark's contribution
+is turning that disclosed caveat into four measured numbers instead of a sentence.
+
 ## Measured results
 
 Machine: AMD Ryzen 7 7800X3D, 8 physical / 16 logical cores, Windows 11 Home, JDK 21 Temurin.
@@ -109,19 +142,26 @@ Machine: AMD Ryzen 7 7800X3D, 8 physical / 16 logical cores, Windows 11 Home, JD
 | 40K+ synthetic queries and labels grown from 150 hand-written seeds | 40,500 training (query, listing, grade) rows from 150 seeds (8,100 queries x 5 judged candidates) | yes |
 | Audited at 88% agreement against 400 hand-labeled pairs | 88.0% (352/400), best of 3 genuine attempts (70.0% -> 80.5% -> 88.0%) | yes |
 | Disagreements kept as the regression suite | `docs/audit_disagreements.csv`, 48 rows | yes |
+| Per-slot extraction scored on 300 hand-labeled queries | precision 1.0 on all 4 slots (0 false positives/300); recall: neighbourhood 0.80, price 0.625, amenity 0.50, bedroom 0.50 (`docs/slot_extraction_benchmark_output.txt`) | yes (scored; see Findings for why recall is uneven) |
 
 Note on the latency claim: measured live against the full 199,021-listing corpus through the real
 GraphQL HTTP endpoint at 50 concurrent clients (1,000 total requests); see
 `docs/latency_benchmark_output.txt` for the raw p50/p95/max this session measured.
 
+Note on the slot-extraction claim: "scored on 300 hand-labeled queries" is a measurement
+commitment, not a specific accuracy target; see Findings for the measured precision/recall and
+the disclosed reason recall is below 1.0 on three of the four slots.
+
 ## Building and running
 
 ```
-mvn test                                                                       # 20 tests, ~3s, uses the committed 200-row sample
+mvn test                                                                       # 21 tests, ~5s, uses the committed 200-row sample
 mvn test -Dtest=NdcgBenchmarkRunner -Dsurefire.excludedGroups= -Dapp.bench.listings-csv-path=<listings_trimmed.csv> -Dapp.bench.data-dir=<python output dir>
 mvn test -Dtest=LatencyBenchmarkRunner -Dsurefire.excludedGroups= -Dapp.bench.listings-csv-path=<...> -Dapp.bench.data-dir=<...>
 python python/generate_synthetic_queries.py <listings_trimmed.csv> <out_dir> --seed 13
 python python/audit_sample.py <listings_trimmed.csv> <out_dir> --seed 7 --sample-size 400
+python python/generate_slot_eval_queries.py src/test/resources/listings_sample.csv src/test/resources/slot_eval_queries.csv --seed 29
+mvn test -Dtest=SlotExtractionEvaluationTest                                  # regenerates nothing; reads the committed 300-row CSV
 ```
 
 ## Limitations
@@ -134,4 +174,10 @@ adds up at this corpus size and concurrency; a precomputed per-neighbourhood ind
 next genuine attempt, not attempted this session. The 400-pair audit's "second opinion" is a second heuristic,
 not a real human rater (disclosed in Honest framing). `QueryParser` is rule-based and only
 recognizes the price/bedroom/amenity/neighbourhood vocabulary this project's own query set uses;
-it is not a general-purpose intent parser.
+it is not a general-purpose intent parser. The 300-query slot-extraction benchmark measures
+exactly that limitation: recall is 0.50 to 0.80 on three of the four slots once a template uses a
+phrasing (a word-form number, an abbreviation, a synonym, an unrecognized place name) outside the
+parser's fixed patterns and dictionary; precision stays 1.0 because the parser never guesses, it
+either matches a known pattern or extracts nothing. The 300 queries are hand-labeled by template
+(30 hand-assigned ground-truth judgments, each expanded over 10 real listings), not 300
+individually hand-typed sentences; see Honest framing.
